@@ -2,7 +2,7 @@
 """ Task 1: Simple pagination """
 import csv
 import math
-from typing import List
+from typing import List, Dict
 
 index_range = __import__('0-simple_helper_function').index_range
 
@@ -47,3 +47,30 @@ class Server:
             new_page = all_of_data[i]
             Page_list.append(new_page)
         return Page_list
+
+    def get_hyper(self, page: int = 1, page_size: int = 10) -> Dict:
+        """ Return a dict containing the key/value pairs as listed """
+        hp_dict = {}
+        all_of_data = self.dataset()
+        data_size = len(all_of_data)
+        the_range = (page * page_size)
+        total_page = (data_size + 1) / page_size
+        if the_range > data_size:
+            hp_dict['page_size'] = 0
+            hp_dict['page'] = page
+            hp_dict['data'] = []
+            hp_dict['next_page'] = None
+            hp_dict['prev_page'] = (page - 1)
+            hp_dict['total_pages'] = (total_page + 1)
+
+        else:
+            hp_dict['page_size'] = page_size
+            hp_dict['page'] = page
+            hp_dict['data'] = self.get_page(page, page_size)
+            hp_dict['next_page'] = (page + 1)
+            if hp_dict['page'] == 1:
+                hp_dict['prev_page'] = None
+            else:
+                hp_dict['prev_page'] = (page - 1)
+            hp_dict['total_pages'] = total_page
+        return hp_dict
